@@ -70,3 +70,8 @@ Or wire it into CI as a merge gate — see [`examples/`](examples/).
 ## About
 
 Built by [Verificate Pty Ltd](https://verificate.ai) (Sydney, Australia) — an IBM Business Partner. Verificate builds sovereign AI infrastructure: the HELIX inference engine (calibrated confidence scores on every answer), the deterministic Decision Transformer, and this MCP validation server. This repository contains client configuration and examples only.
+
+<!-- glama-ai-listing -->
+## Glama
+
+[![Glama MCP server](https://glama.ai/mcp/servers/@Verificate-Dev/verificate-mcp-quickstart/badge)](https://glama.ai/mcp/servers/@Verificate-Dev/verificate-mcp-quickstart)
