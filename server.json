@@ -1,0 +1,27 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
+  "name": "io.github.verificate-dev/verificate",
+  "description": "Validation gates for AI coding: deterministic reality checks (mock/placeholder veto, gaming and bypass detection) plus enterprise-grade performance, scalability and reliability review of AI-generated code, plans and outputs — before they reach production.",
+  "status": "active",
+  "repository": {
+    "url": "https://github.com/Verificate-Dev/verificate-mcp-quickstart",
+    "source": "github"
+  },
+  "version_detail": {
+    "version": "1.0.0"
+  },
+  "remotes": [
+    {
+      "transport_type": "streamable-http",
+      "url": "https://verificate-portal-verificate-granite-4-small.apps.gpu4.fusion.isys.hpc.dc.uq.edu.au/mcp",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "Bearer token from your Verificate account dashboard (30-day free trial at https://verificate.ai/auth/signup)",
+          "is_required": true,
+          "is_secret": true
+        }
+      ]
+    }
+  ]
+}

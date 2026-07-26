@@ -1,0 +1,19 @@
+# Example: gate a PR on Verificate MCP validation (GitHub Actions)
+# Requires secret VERIFICATE_TOKEN (trial or subscription token).
+name: verificate-gate
+on: [pull_request]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate diff with Verificate
+        run: |
+          DIFF=$(git diff origin/${{ github.base_ref }}...HEAD | head -c 60000)
+          RESP=$(curl -s https://verificate-portal-verificate-granite-4-small.apps.gpu4.fusion.isys.hpc.dc.uq.edu.au/mcp \
+            -H "Authorization: Bearer ${{ secrets.VERIFICATE_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -n --arg code "$DIFF" '{jsonrpc:"2.0",id:1,method:"tools/call",params:{name:"validate_ai_output",arguments:{ai_output:$code,validation_type:"code_generation"}}}')")
+          echo "$RESP" | jq .
+          echo "$RESP" | jq -e '.result.content[0].text | fromjson | .valid == true' || {
+            echo "::error::Verificate gate rejected this change"; exit 1; }
