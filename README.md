@@ -4,7 +4,9 @@
 
 Your coding assistant writes a mock and calls it done. It invents an SDK call that doesn't exist. It ships an N+1 loop that passes every test and dies under load. Verificate MCP runs the deep review pass on every AI output — deterministic reality gates first (any one can veto), then an enterprise-grade review scores what survives — **before the code reaches your codebase**.
 
+- 📇 Official MCP Registry: [`ai.verificate/mcp`](https://registry.modelcontextprotocol.io/v0/servers?search=verificate)
 - 🌐 Product page: <https://verificate.ai/mcp>
+- 📚 Guides: [catch hallucinated code](https://verificate.ai/articles/catch-ai-hallucinated-code/) · [5-minute setup](https://verificate.ai/articles/claude-code-review-mcp-server/) · [deep performance bugs](https://verificate.ai/articles/ai-coding-performance-bugs/) · [cheaper models, safely](https://verificate.ai/articles/cheaper-ai-coding-models-validation-gate/)
 - 🆓 30-day free trial (no card): <https://verificate.ai/auth/signup>
 - 📖 Background reading: [*Every Bob needs a Wendy*](https://community.ibm.com/community/user/viewdocument/every-bob-needs-a-wendy?CommunityKey=300ac388-08f0-427e-a600-0199bfc9dd2a&tab=librarydocuments) (IBM Community)
 
