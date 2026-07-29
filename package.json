@@ -1,0 +1,15 @@
+{
+  "name": "verificate-mcp",
+  "version": "1.8.0",
+  "description": "Verificate MCP stdio bridge — validation gates for AI coding (reality checks with veto + ISO/IEC 25010 review), forwarding to the hosted Verificate gateway.",
+  "bin": { "verificate-mcp": "index.js" },
+  "main": "index.js",
+  "type": "commonjs",
+  "engines": { "node": ">=18" },
+  "keywords": ["mcp", "model-context-protocol", "code-review", "validation", "ai-coding", "claude-code", "cursor", "windsurf"],
+  "author": "Verificate Pty Ltd (https://verificate.ai)",
+  "license": "MIT",
+  "repository": { "type": "git", "url": "https://github.com/Verificate-Dev/verificate-mcp-quickstart.git" },
+  "homepage": "https://verificate.ai/mcp",
+  "mcpName": "ai.verificate/mcp"
+}
