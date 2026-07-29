@@ -1,6 +1,6 @@
 # Verificate MCP — validation gates for AI coding
 
-**Deterministic quality gates for AI-generated code, as an MCP server.** Works with Claude Code, Cursor, Windsurf, and any MCP client.
+**Vetoes the bugs only AI writes — invented APIs, mock 'success', false 'done' claims, N+1s that pass tests.** Deterministic reality gates with veto power, then ISO/IEC 25010 deep review. Works with Claude Code, Cursor, Windsurf, and any MCP client.
 
 Your coding assistant writes a mock and calls it done. It invents an SDK call that doesn't exist. It ships an N+1 loop that passes every test and dies under load. Verificate MCP runs the deep review pass on every AI output — deterministic reality gates first (any one can veto), then an enterprise-grade review scores what survives — **before the code reaches your codebase**.
 
