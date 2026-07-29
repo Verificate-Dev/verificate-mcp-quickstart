@@ -57,6 +57,26 @@ claude mcp add --transport http verificate \
 
 Cursor: add to `~/.cursor/mcp.json`. Windsurf: add to `~/.codeium/windsurf/mcp_config.json`.
 
+## Run locally (stdio bridge)
+
+This repo is also a runnable, zero-dependency MCP server: a stdio bridge that serves
+`initialize`/`tools/list` locally and forwards tool calls to the hosted gateway.
+Use it with clients that prefer stdio servers:
+
+```bash
+VERIFICATE_TOKEN=<your-token> npx github:Verificate-Dev/verificate-mcp-quickstart
+```
+
+Or with Docker:
+
+```bash
+docker build -t verificate-mcp .
+docker run -i -e VERIFICATE_TOKEN=<your-token> verificate-mcp
+```
+
+Without `VERIFICATE_TOKEN`, introspection still works and tool calls return
+instructions for getting a trial token.
+
 ## Suggested workflow
 
 Ask your agent to validate before it finishes:
