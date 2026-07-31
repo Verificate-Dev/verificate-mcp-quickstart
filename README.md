@@ -164,7 +164,14 @@ Without `VERIFICATE_TOKEN`, introspection still works and tool calls return inst
 
 Built by [Verificate Pty Ltd](https://verificate.ai) (Sydney, Australia) — an IBM Business Partner. Verificate builds sovereign AI infrastructure: the HELIX inference engine (calibrated confidence scores on every answer), the deterministic Decision Transformer, and this MCP validation server. Product page: <https://verificate.ai/mcp> · Official registry: [`ai.verificate/mcp`](https://registry.modelcontextprotocol.io/v0/servers?search=verificate)
 
+## Licensing
+
+This repo (the stdio bridge, client configs and CI examples) is **MIT** — use it freely.
+The Verificate validation engine and hosted gateway it talks to are a **commercial service**
+(30-day free trial, then subscription): the 17 protection gates and the frontier-model review
+run server-side and are not part of this repository.
+
 <!-- glama-ai-listing -->
 ## Glama
 
-[![Glama MCP server](https://glama.ai/mcp/servers/@Verificate-Dev/verificate-mcp-quickstart/badge)](https://glama.ai/mcp/servers/@Verificate-Dev/verificate-mcp-quickstart)
+[![Verificate MCP server score](https://glama.ai/mcp/servers/Verificate-Dev/verificate-mcp-quickstart/badges/score.svg)](https://glama.ai/mcp/servers/Verificate-Dev/verificate-mcp-quickstart)
