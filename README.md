@@ -1,6 +1,6 @@
-# Verificate MCP — validation gates for AI coding
+# Verificate MCP — agentic code review with veto power
 
-**Vetoes the bugs only AI writes — invented APIs, mock 'success', false 'done' claims, N+1s that pass tests.** Deterministic reality gates with veto power, then ISO/IEC 25010 deep review. Works with Claude Code, Cursor, Windsurf, and any MCP client.
+**Not another linter wrapper.** The code-quality shelf on every MCP directory is two things: scanners (ESLint, Semgrep and SonarQube bridges — deterministic rules, no judgment) and prompt relays that pipe your repo to your own LLM key (self-review with extra steps). Verificate is neither. It is an **agentic reviewer with authority**: 17 deterministic reality gates — mock/placeholder veto, gaming & bypass detection, invented-API checks — fused with a **frontier-model enterprise review** (ISO/IEC 25010: performance, scalability, reliability). The gates hold veto power that no model output can override. Hosted, zero-install, binary verdict in seconds — in Claude Code, Cursor, Windsurf or any MCP client.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-8CCB43.svg)](LICENSE)
 [![Official MCP Registry](https://img.shields.io/badge/MCP_Registry-ai.verificate%2Fmcp-blue)](https://registry.modelcontextprotocol.io/v0/servers?search=verificate)
@@ -94,13 +94,19 @@ AI output ──► Reality gates (deterministic, any one vetoes)
 
 The two stages are deliberately separate: if reality and quality were blended into one score, a beautifully structured function that fakes its refund path could still average out to "acceptable." A veto architecture makes that impossible.
 
-## Why not just…
+## The category, honestly
 
-| Alternative | What it misses |
-|---|---|
-| **A linter / static analysis (Sonar, etc.)** | Rules can't know the refund function *never calls the payment provider* — the code is syntactically perfect. Reality gates and production arithmetic (loop size × latency × rate limits) live outside the rule engine. Run both: static analysis for codebase hygiene, Verificate for what the AI just wrote. |
-| **A bigger model** | Self-review inherits self-blindness — the reviewer shares the generator's blind spots. An external gate holds the same bar for every model, which also makes **smaller, cheaper models safe to ship with**: same $30/month gate either way. |
-| **Human review of every AI diff** | Doesn't scale at AI generation speed. The gate does the first pass in seconds; humans review verdicts, not raw diffs. |
+Everything else on the MCP code-quality shelf is free — and that's fair, because a wrapper should be free. What you can't get for free is **judgment with authority**:
+
+| What you'll find on the directories | What it is | What it structurally can't do |
+|---|---|---|
+| **Linter wrappers** — ESLint MCP, Semgrep MCP, SonarQube MCP | Rule-based scanners exposed as MCP tools. Deterministic, free, worth running. | No judgment. Rules can't know the refund function *never calls the payment provider*, or that `stripe.Inventory` doesn't exist. No verdict, no veto — findings your agent is free to ignore. |
+| **BYO-key review relays** | Your repo + a review prompt, piped to your own OpenAI/Anthropic key. | Self-review with extra steps: the reviewer shares the generator's blind spots, there are no deterministic gates underneath, and whatever the model says goes. You maintain keys, versions and hosting. |
+| **A bigger model** | Hope the generator reviews itself better. | Self-review inherits self-blindness. An external gate holds the same bar for every model — which also makes **smaller, cheaper models safe to ship with**: same gate either way. |
+| **Human review of every AI diff** | The gold standard, at human speed. | Doesn't scale at AI generation speed. The gate does the first pass in seconds; humans review verdicts, not raw diffs. |
+| **Verificate MCP** | Deterministic reality gates **with veto**, then a frontier-model enterprise review — fused into one binary verdict. Hosted, always on the current model. | — |
+
+That second layer is the part you pay for: a frontier agent doing the deep review — production arithmetic, failure modes, SDK reality — with a deterministic floor under it that the agent itself cannot argue away.
 
 ## Run locally (stdio bridge)
 
