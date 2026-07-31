@@ -10,7 +10,7 @@ jobs:
       - name: Validate diff with Verificate
         run: |
           DIFF=$(git diff origin/${{ github.base_ref }}...HEAD | head -c 60000)
-          RESP=$(curl -s https://verificate-portal-verificate-granite-4-small.apps.gpu4.fusion.isys.hpc.dc.uq.edu.au/mcp \
+          RESP=$(curl -s https://mcp.verificate.ai/mcp \
             -H "Authorization: Bearer ${{ secrets.VERIFICATE_TOKEN }}" \
             -H "Content-Type: application/json" \
             -d "$(jq -n --arg code "$DIFF" '{jsonrpc:"2.0",id:1,method:"tools/call",params:{name:"validate_ai_output",arguments:{ai_output:$code,validation_type:"code_generation"}}}')")
