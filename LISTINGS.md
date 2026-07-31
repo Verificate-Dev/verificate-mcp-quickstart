@@ -6,7 +6,7 @@ Form-based directories need an account login (GitHub OAuth) — paste the fields
 **Tagline (short):** Validation gates for AI coding — catch hallucinated APIs, mocks and deep performance bugs before they ship.
 **Category:** Developer Tools / Code Quality / Validation
 **Server type:** Remote (streamable HTTP), authenticated (Bearer token, 30-day free trial)
-**Endpoint:** `https://verificate-portal-verificate-granite-4-small.apps.gpu4.fusion.isys.hpc.dc.uq.edu.au/mcp`
+**Endpoint:** `https://mcp.verificate.ai/mcp`
 **Website:** https://verificate.ai/mcp
 **Repo:** https://github.com/Verificate-Dev/verificate-mcp-quickstart
 **Tools:** validate_ai_output, analyze_code, validate_plan, generate_code

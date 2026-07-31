@@ -1,25 +1,24 @@
 {
-  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
-  "name": "io.github.verificate-dev/verificate",
-  "description": "Validation gates for AI coding: deterministic reality checks (mock/placeholder veto, gaming and bypass detection) plus enterprise-grade performance, scalability and reliability review of AI-generated code, plans and outputs — before they reach production.",
-  "status": "active",
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "ai.verificate/mcp",
+  "description": "Vetoes the bugs only AI writes: invented APIs, mock 'success', false 'done', N+1s that pass tests.",
+  "title": "Verificate MCP",
   "repository": {
     "url": "https://github.com/Verificate-Dev/verificate-mcp-quickstart",
     "source": "github"
   },
-  "version_detail": {
-    "version": "1.0.0"
-  },
+  "version": "1.8.2",
+  "websiteUrl": "https://verificate.ai/mcp",
   "remotes": [
     {
-      "transport_type": "streamable-http",
-      "url": "https://verificate-portal-verificate-granite-4-small.apps.gpu4.fusion.isys.hpc.dc.uq.edu.au/mcp",
+      "type": "streamable-http",
+      "url": "https://mcp.verificate.ai/mcp",
       "headers": [
         {
-          "name": "Authorization",
-          "description": "Bearer token from your Verificate account dashboard (30-day free trial at https://verificate.ai/auth/signup)",
-          "is_required": true,
-          "is_secret": true
+          "description": "Bearer <token> — from your Verificate dashboard (30-day free trial, no card: https://verificate.ai/auth/signup)",
+          "isRequired": true,
+          "isSecret": true,
+          "name": "Authorization"
         }
       ]
     }

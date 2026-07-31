@@ -17,7 +17,7 @@
 
 const GATEWAY =
   process.env.VERIFICATE_URL ||
-  "https://verificate-portal-verificate-granite-4-small.apps.gpu4.fusion.isys.hpc.dc.uq.edu.au/mcp";
+  "https://mcp.verificate.ai/mcp";
 const TOKEN = process.env.VERIFICATE_TOKEN || "";
 const VERSION = "1.8.0";
 const PROTOCOL_VERSION = "2025-06-18";
