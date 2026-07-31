@@ -21,12 +21,14 @@ Each of those is an afternoon of production debugging, caught in seconds.
 
 ## Tools
 
-| Tool | What it does | When your agent calls it |
+Each tool has one job — two gates that return verdicts, one advisor that doesn't, one generator:
+
+| Tool | Job | Returns |
 |---|---|---|
-| `validate_ai_output` | Deterministic reality gates (mock/placeholder veto, gaming & bypass detection, integrity monitoring), then ISO/IEC 25010-grade review of performance, scalability, reliability and tech debt. | Before presenting any substantive change as complete. |
-| `analyze_code` | Deep code analysis on demand — hot paths, rate-limit math, failure modes, hallucinated APIs. | When you want the deep-review pass on existing code. |
-| `validate_plan` | Score a plan/design for completeness, feasibility, scalability implications and risk before work begins. | Before writing code — the cheapest place to catch a bad design. |
-| `generate_code` | Generate code that is gated through the protection engine before it is returned (no placeholder output). | When you want generation and review in one step. |
+| `validate_ai_output` | **The merge gate for AI-written code.** Deterministic reality gates (mock/placeholder veto, gaming & bypass detection, invented-API checks) run first and can't be overridden; ISO/IEC 25010 review scores what survives. | Binary **approve/reject** verdict + severity-ranked findings |
+| `validate_plan` | **The gate for plans and designs**, before any code exists — completeness, feasibility, scalability implications, risk. The cheapest place to catch a bad design. | Binary **approve/reject** verdict + findings |
+| `analyze_code` | **Advisory deep-dive** on existing code — hot paths, rate-limit math, failure modes, tech debt. Use it to understand a rejection or review inherited code. | Scores + findings, deliberately **no verdict** |
+| `generate_code` | **Generate + gate in one step** — the LLM writes it, the same protection engine vets it before you see it. | Gated code (no placeholders, no invented APIs) |
 
 ## Quick start (hosted — no install)
 
