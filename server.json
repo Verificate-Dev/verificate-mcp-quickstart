@@ -1,13 +1,13 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "ai.verificate/mcp",
-  "description": "Vetoes the bugs only AI writes: invented APIs, mock 'success', false 'done', N+1s that pass tests.",
+  "description": "Agentic code review with veto: 17 deterministic reality gates + frontier-model deep review.",
   "title": "Verificate MCP",
   "repository": {
     "url": "https://github.com/Verificate-Dev/verificate-mcp-quickstart",
     "source": "github"
   },
-  "version": "1.8.2",
+  "version": "1.8.4",
   "websiteUrl": "https://verificate.ai/mcp",
   "remotes": [
     {
