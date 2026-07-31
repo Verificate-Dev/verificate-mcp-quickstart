@@ -30,6 +30,13 @@ Each tool has one job — two gates that return verdicts, one advisor that doesn
 | `analyze_code` | **Advisory deep-dive** on existing code — hot paths, rate-limit math, failure modes, tech debt. Use it to understand a rejection or review inherited code. | Scores + findings, deliberately **no verdict** |
 | `generate_code` | **Generate + gate in one step** — the LLM writes it, the same protection engine vets it before you see it. | Gated code (no placeholders, no invented APIs) |
 
+### Beyond tools
+
+The server also ships **prompts** and **resources** for a richer client experience:
+
+- Prompts `gate_my_changes` / `review_my_plan` — one-click workflows that loop validate → fix → re-validate until approved.
+- Resources `verificate://gates` (what each of the 17 deterministic gates watches for) and `verificate://example-verdict` (a verbatim production rejection).
+
 ## Quick start (hosted — no install)
 
 1. Create an account at <https://verificate.ai/auth/signup> (30-day trial, no card) and copy the token from your dashboard.

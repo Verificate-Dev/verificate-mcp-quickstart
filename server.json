@@ -7,7 +7,7 @@
     "url": "https://github.com/Verificate-Dev/verificate-mcp-quickstart",
     "source": "github"
   },
-  "version": "1.8.4",
+  "version": "1.8.5",
   "websiteUrl": "https://verificate.ai/mcp",
   "remotes": [
     {
@@ -20,6 +20,22 @@
           "isSecret": true,
           "name": "Authorization"
         }
+      ]
+    }
+  ],
+  "icons": [
+    {
+      "src": "https://verificate.ai/icon-512.png",
+      "mimeType": "image/png",
+      "sizes": [
+        "512x512"
+      ]
+    },
+    {
+      "src": "https://verificate.ai/icon-192.png",
+      "mimeType": "image/png",
+      "sizes": [
+        "192x192"
       ]
     }
   ]
