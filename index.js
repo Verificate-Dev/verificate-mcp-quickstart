@@ -19,74 +19,443 @@ const GATEWAY =
   process.env.VERIFICATE_URL ||
   "https://mcp.verificate.ai/mcp";
 const TOKEN = process.env.VERIFICATE_TOKEN || "";
-const VERSION = "1.8.0";
+const VERSION = "1.8.6";
 const PROTOCOL_VERSION = "2025-06-18";
 
+// Mirrored from the hosted gateway (tools/list etc.) — regenerate with
+// scripts in the main repo when server definitions change; directories
+// (Glama and others) score THESE local definitions.
 const TOOLS = [
   {
-    name: "validate_ai_output",
-    description:
-      "Enterprise validation gate (IBM/ISO/MLOps, top-5% bar). Approves code or plans, flags performance/scalability/reliability/tech-debt issues (not syntax), and enforces deterministic anti-placeholder/anti-deception gates. Set validation_type='plan' to validate a plan.",
-    inputSchema: {
-      type: "object",
-      properties: {
-        ai_output: { type: "string", description: "Code, plan, or output to validate" },
-        context: { type: "object", description: 'Context, e.g. {"language": "cpp"}' },
-        validation_type: {
-          type: "string",
-          default: "code_generation",
-          description: "code_generation | plan | design | architecture | text",
+    "name": "validate_ai_output",
+    "title": "Gate AI-written code",
+    "description": "The merge gate for AI-written CODE: returns a binary approve/reject verdict with veto power — e.g. it rejects code calling the nonexistent stripe.Inventory API, or an N+1 loop with the latency arithmetic to prove it. Deterministic reality gates (mock/placeholder veto, gaming and bypass detection, invented-API checks) run first and cannot be overridden; a frontier-model review (ISO/IEC 25010) then scores performance, scalability, reliability and tech debt. Read-only: the code is analyzed, never executed. Call it on every AI-generated diff before accepting it; use validate_plan for plans, analyze_code for an advisory report without a verdict.",
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": true
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "ai_output": {
+          "type": "string",
+          "description": "The AI-generated code to gate — a diff, function or whole file. Plain source text, any mainstream language."
         },
-      },
-      required: ["ai_output"],
-    },
-  },
-  {
-    name: "analyze_code",
-    description:
-      "Enterprise code analysis: performance/scalability hot paths, reliability, tech debt, and ISO/IEC 25010 + MLOps quality attributes (syntax/lint assumed handled upstream).",
-    inputSchema: {
-      type: "object",
-      properties: {
-        code: { type: "string", description: "Code to analyze" },
-        language: { type: "string", description: "Source language (python, cpp, sql, swift, ...)" },
-        analysis_type: {
-          type: "string",
-          default: "quality",
-          description: "quality | performance | scalability | security | tech_debt",
+        "validation_type": {
+          "type": "string",
+          "default": "code_generation",
+          "enum": [
+            "code_generation",
+            "text"
+          ],
+          "description": "'code_generation' (default) for source code; 'text' for prose output such as documentation or commit messages."
         },
+        "context": {
+          "type": "object",
+          "description": "Optional review context, e.g. {\"language\": \"cpp\", \"scale\": \"10k req/s\"}. 'language' sharpens SDK-reality checks."
+        }
       },
-      required: ["code"],
+      "required": [
+        "ai_output"
+      ]
     },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "valid": {
+          "type": "boolean",
+          "description": "The binary verdict: true = approved, false = rejected"
+        },
+        "score": {
+          "type": "number",
+          "description": "Combined score 0-100 (gates fused with the model review)"
+        },
+        "confidence": {
+          "type": "number",
+          "description": "score / 100"
+        },
+        "issues": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Severity-ranked findings, each 'severity|category|detail' with the reasoning"
+        },
+        "suggestions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Concrete fixes to reach approval"
+        },
+        "protection": {
+          "type": "object",
+          "description": "Deterministic gate result. A veto here is final — the model review cannot override it.",
+          "properties": {
+            "verdict": {
+              "type": "string",
+              "description": "'approved' or 'rejected' from the gate layer"
+            },
+            "vetoed": {
+              "type": "boolean",
+              "description": "True if any veto gate failed the submission"
+            },
+            "vetoed_by": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Names of the gates that vetoed, e.g. ['code_reality_gate']"
+            },
+            "protection_score": {
+              "type": "number",
+              "description": "Deterministic gate score, 0-100"
+            }
+          },
+          "additionalProperties": true
+        },
+        "provider": {
+          "type": "string",
+          "description": "Model that ran the deep review, or 'protection-gates-only'"
+        }
+      },
+      "required": [
+        "valid",
+        "score",
+        "issues"
+      ],
+      "additionalProperties": true
+    }
   },
   {
-    name: "validate_plan",
-    description:
-      "Validate a PLAN/design BEFORE coding against enterprise standards: completeness, feasibility, performance & scalability implications, risks, ISO/MLOps compliance, and missing considerations.",
-    inputSchema: {
-      type: "object",
-      properties: {
-        plan: { type: "string", description: "The plan/design/spec to validate" },
-        context: { type: "object", description: "Optional context (system, constraints, scale targets)" },
-      },
-      required: ["plan"],
+    "name": "validate_plan",
+    "title": "Gate an implementation plan",
+    "description": "The gate for PLANS, designs and specs — run BEFORE any code is written, the cheapest place to catch a bad design. Returns the same binary verdict shape as validate_ai_output, with findings on completeness, feasibility, performance and scalability implications, security risks and missing considerations (e.g. it rejects a plan that polls an API every 100ms per client, with the request-volume math). Read-only: nothing is executed or stored beyond the verdict. Use validate_ai_output for the code that follows.",
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": true
     },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "plan": {
+          "type": "string",
+          "description": "The implementation plan, design or spec to validate, as plain text or markdown — e.g. a numbered migration plan or an architecture sketch."
+        },
+        "context": {
+          "type": "object",
+          "description": "Optional constraints the review should weigh, e.g. {\"system\": \"payments API\", \"scale\": \"1M users\", \"constraints\": \"PostgreSQL only\"}."
+        }
+      },
+      "required": [
+        "plan"
+      ]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "valid": {
+          "type": "boolean",
+          "description": "The binary verdict: true = approved, false = rejected"
+        },
+        "score": {
+          "type": "number",
+          "description": "Combined score 0-100 (gates fused with the model review)"
+        },
+        "confidence": {
+          "type": "number",
+          "description": "score / 100"
+        },
+        "issues": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Severity-ranked findings, each 'severity|category|detail' with the reasoning"
+        },
+        "suggestions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Concrete fixes to reach approval"
+        },
+        "protection": {
+          "type": "object",
+          "description": "Deterministic gate result. A veto here is final — the model review cannot override it.",
+          "properties": {
+            "verdict": {
+              "type": "string",
+              "description": "'approved' or 'rejected' from the gate layer"
+            },
+            "vetoed": {
+              "type": "boolean",
+              "description": "True if any veto gate failed the submission"
+            },
+            "vetoed_by": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Names of the gates that vetoed, e.g. ['code_reality_gate']"
+            },
+            "protection_score": {
+              "type": "number",
+              "description": "Deterministic gate score, 0-100"
+            }
+          },
+          "additionalProperties": true
+        },
+        "provider": {
+          "type": "string",
+          "description": "Model that ran the deep review, or 'protection-gates-only'"
+        }
+      },
+      "required": [
+        "valid",
+        "score",
+        "issues"
+      ],
+      "additionalProperties": true
+    }
   },
   {
-    name: "generate_code",
-    description:
-      "Generate code with an LLM, then gate the result through the protection engine (no placeholder output)",
-    inputSchema: {
-      type: "object",
-      properties: {
-        prompt: { type: "string", description: "Code generation prompt" },
-        language: { type: "string", default: "python" },
-        max_tokens: { type: "integer", default: 4000 },
-      },
-      required: ["prompt"],
+    "name": "analyze_code",
+    "title": "Advisory code deep-dive",
+    "description": "Advisory deep-dive on existing code — scores and findings, deliberately NO pass/fail verdict, so it never blocks an agent. Surfaces performance hot paths, scalability cliffs, reliability gaps and tech debt with concrete latency/throughput arithmetic (e.g. 'O(n²) dedup: ~4s at 10k items'). Read-only: the code is analyzed, never executed. Use it to understand a validate_ai_output rejection or review inherited code; use validate_ai_output when you need an accept/reject decision.",
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": true
     },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "The source code to analyze — a function, file or pasted excerpt."
+        },
+        "analysis_type": {
+          "type": "string",
+          "default": "quality",
+          "enum": [
+            "quality",
+            "performance",
+            "scalability",
+            "security",
+            "tech_debt"
+          ],
+          "description": "Lens for the review: 'quality' (default, broad ISO/IEC 25010 pass) or a focused pass on one dimension."
+        },
+        "language": {
+          "type": "string",
+          "description": "Source language, e.g. 'python', 'typescript', 'cpp', 'sql', 'swift'. Inferred if omitted; stating it sharpens findings."
+        }
+      },
+      "required": [
+        "code"
+      ]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "quality_score": {
+          "type": "number",
+          "description": "0-100 advisory score for the chosen lens"
+        },
+        "complexity": {
+          "type": "string",
+          "description": "low | medium | high"
+        },
+        "issues": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Findings as 'severity|category|detail' with supporting arithmetic"
+        },
+        "suggestions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "provider": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "quality_score",
+        "issues"
+      ],
+      "additionalProperties": true
+    }
   },
+  {
+    "name": "generate_code",
+    "title": "Generate gated code",
+    "description": "Generate code and gate it in one step: an LLM writes the implementation, then the same protection engine as validate_ai_output vets it — retrying generation when the gate rejects. If every attempt is vetoed you still receive the last attempt, clearly marked validated:false with the gate findings — rejected code is never presented as clean. Generation runs on our infrastructure; nothing executes in your environment.",
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "prompt": {
+          "type": "string",
+          "description": "What to build, with any constraints worth enforcing — e.g. 'a rate-limited retry decorator with exponential backoff, stdlib only'."
+        },
+        "language": {
+          "type": "string",
+          "default": "python",
+          "description": "Target language for the generated code, e.g. 'python' (default), 'typescript', 'go', 'sql'."
+        },
+        "max_tokens": {
+          "type": "integer",
+          "default": 4000,
+          "minimum": 256,
+          "maximum": 32768,
+          "description": "Generation budget. The default 4000 fits most functions/classes; raise it for multi-file scaffolds."
+        }
+      },
+      "required": [
+        "prompt"
+      ]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "generated": {
+          "type": "boolean",
+          "description": "False only when no provider returned code"
+        },
+        "code": {
+          "type": "string",
+          "description": "The generated implementation"
+        },
+        "validated": {
+          "type": "boolean",
+          "description": "True if the protection gates approved the final attempt; false means the gate findings in 'protection' explain the veto"
+        },
+        "validation_score": {
+          "type": "number",
+          "description": "Deterministic gate score, 0-100"
+        },
+        "attempts": {
+          "type": "integer",
+          "description": "Generation attempts before approval or give-up"
+        },
+        "protection": {
+          "type": "object",
+          "description": "Deterministic gate result. A veto here is final — the model review cannot override it.",
+          "properties": {
+            "verdict": {
+              "type": "string",
+              "description": "'approved' or 'rejected' from the gate layer"
+            },
+            "vetoed": {
+              "type": "boolean",
+              "description": "True if any veto gate failed the submission"
+            },
+            "vetoed_by": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Names of the gates that vetoed, e.g. ['code_reality_gate']"
+            },
+            "protection_score": {
+              "type": "number",
+              "description": "Deterministic gate score, 0-100"
+            }
+          },
+          "additionalProperties": true
+        },
+        "provider": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "generated"
+      ],
+      "additionalProperties": true
+    }
+  }
 ];
+
+const PROMPTS = [
+  {
+    "name": "gate_my_changes",
+    "title": "Gate my changes",
+    "description": "Run the Verificate merge gate on code and loop until it is approved: validate, fix every finding, re-validate.",
+    "arguments": [
+      {
+        "name": "code",
+        "description": "The code to gate (paste the diff or file)",
+        "required": true
+      }
+    ]
+  },
+  {
+    "name": "review_my_plan",
+    "title": "Review my plan",
+    "description": "Gate an implementation plan before any code is written: validate it, address every finding, re-validate.",
+    "arguments": [
+      {
+        "name": "plan",
+        "description": "The implementation plan or design to review",
+        "required": true
+      }
+    ]
+  }
+];
+
+const RESOURCES = [
+  {
+    "uri": "verificate://gates",
+    "name": "The 17 protection gates",
+    "description": "What each deterministic gate watches for, and why a veto cannot be overridden.",
+    "mimeType": "text/markdown"
+  },
+  {
+    "uri": "verificate://example-verdict",
+    "name": "Example rejection verdict",
+    "description": "A verbatim REJECTED 30.8/100 verdict from the production gateway.",
+    "mimeType": "text/markdown"
+  }
+];
+
+const RESOURCE_TEXT = {
+  "verificate://gates": "# The 17 Verificate protection gates\n\nDeterministic reality gates run before any model judgement. Any veto gate can fail a\nsubmission outright — the frontier-model review that follows can lower a score but can\nnever override a gate veto.\n\n| Gate | Watches for |\n|---|---|\n| code_reality_gate | Invented/hallucinated APIs and SDK calls; code that cannot work as written |\n| reality_validation | Claims that don't match what the code actually does |\n| bullshit_detector | Confident-sounding filler and unsupported claims in output |\n| gaming_prevention | Output shaped to pass checks rather than do the work |\n| bypass_detector | Attempts to route around the gate or soften its verdict |\n| integrity_monitor | Inconsistencies between stated intent and implementation |\n| completion_detector | 'Done' claims without proof (tests, deploys, integrations) |\n| anti_simplification | Silent scope-narrowing: the easy 80% presented as the whole task |\n| ai_failure_prevention | Known LLM failure patterns (placeholder/mocked wire paths, TODO stubs) |\n| enhanced_brutal_feedback | Ensures findings are specific and actionable, not vague hedges |\n| enterprise_validation_orchestrator | Sequencing and fusion of gate verdicts with the model review |\n| static_analysis | Structural checks that ground the review in the actual AST |\n| frontend_validation | UI code reality: dead handlers, unbound state, phantom selectors |\n| visual_validation | Rendered-output claims vs what the code can actually render |\n| collaboration_paradigm_enforcer | Agent behaviour: stop-and-ask vs silently guessing |\n| prompt_engineering_validator | Prompt-injection and instruction-conflict detection in inputs |\n| prompt_enhancer | Normalises weak validation requests so the review sees full context |\n\nGate verdicts are deterministic: same input, same verdict, full audit trail.\n\n",
+  "verificate://example-verdict": "# A real verdict (verbatim from the production gateway)\n\n12 plausible lines of AI-written payment code. Result: REJECTED — 30.8/100,\nvetoed by code_reality_gate. Findings included:\n\n- \"N+1 synchronous API calls ... For 100 items, this results in 100 sequential HTTP\n  roundtrips, taking ~10-20 seconds and blocking the event loop/worker thread ...\n  will trigger Stripe rate limiting (100 req/sec limit).\"\n- \"stripe.Inventory is not a valid Stripe SDK resource.\"\n- \"Floating-point representation issues lead to rounding errors in financial\n  transactions; Stripe API requires integer cents.\"\n\nEach finding is an afternoon of production debugging, caught in seconds.\n\n"
+};
+
+function promptMessages(name, args) {
+  args = args || {};
+  const T = {
+    gate_my_changes: {
+      description: "Gate code through validate_ai_output until approved.",
+      text: "Run the Verificate merge gate on the code below.\n1. Call validate_ai_output with the code.\n2. If the verdict is REJECTED, fix every finding (they include the reasoning and production arithmetic) and call validate_ai_output again on the fixed code.\n3. Repeat until approved, then summarise what the gate caught and what you changed.\n\nCODE:\n",
+      arg: "code",
+    },
+    review_my_plan: {
+      description: "Gate a plan through validate_plan until approved.",
+      text: "Review the implementation plan below with the Verificate plan gate.\n1. Call validate_plan with the plan.\n2. If the verdict is REJECTED, revise the plan to address every finding and validate again.\n3. Repeat until approved, then present the final plan with the findings you addressed.\n\nPLAN:\n",
+      arg: "plan",
+    },
+  };
+  const t = T[name];
+  if (!t) return null;
+  return { description: t.description, messages: [{ role: "user", content: { type: "text", text: t.text + (args[t.arg] || "") } }] };
+}
 
 /* ---------------- upstream (streamable HTTP) ---------------- */
 
@@ -176,7 +545,7 @@ async function handle(msg) {
         id,
         result: {
           protocolVersion: (params && params.protocolVersion) || PROTOCOL_VERSION,
-          capabilities: { tools: {} },
+          capabilities: { tools: { listChanged: true }, prompts: { listChanged: true }, resources: { listChanged: true } },
           serverInfo: { name: "verificate-mcp", version: VERSION },
           instructions:
             "Validation gates for AI coding. Call validate_ai_output on substantive changes before presenting them as complete; a REJECTED verdict means fix the findings and re-validate. Requires VERIFICATE_TOKEN (30-day free trial: https://verificate.ai/auth/signup).",
@@ -189,6 +558,24 @@ async function handle(msg) {
       return send({ jsonrpc: "2.0", id, result: {} });
     case "tools/list":
       return send({ jsonrpc: "2.0", id, result: { tools: TOOLS } });
+    case "prompts/list":
+      return send({ jsonrpc: "2.0", id, result: { prompts: PROMPTS } });
+    case "prompts/get": {
+      const payload = promptMessages(params && params.name, params && params.arguments);
+      if (!payload) {
+        return send({ jsonrpc: "2.0", id, error: { code: -32602, message: "Unknown prompt: " + (params && params.name) } });
+      }
+      return send({ jsonrpc: "2.0", id, result: payload });
+    }
+    case "resources/list":
+      return send({ jsonrpc: "2.0", id, result: { resources: RESOURCES } });
+    case "resources/read": {
+      const uri = params && params.uri;
+      if (!RESOURCE_TEXT[uri]) {
+        return send({ jsonrpc: "2.0", id, error: { code: -32602, message: "Unknown resource: " + uri } });
+      }
+      return send({ jsonrpc: "2.0", id, result: { contents: [{ uri, mimeType: "text/markdown", text: RESOURCE_TEXT[uri] }] } });
+    }
     case "tools/call": {
       if (!TOKEN) {
         return send(
