@@ -79,7 +79,7 @@ Before presenting any substantive code change as complete:
 3. Never claim tests pass or systems are deployed without proof.
 ```
 
-Or wire it into CI as a merge gate — see [`examples/`](examples/).
+One-paste setup prompts that install these rules for you: [PROMPTS.md](PROMPTS.md). Or wire it into CI as a merge gate — see [`examples/`](examples/).
 
 ## How it decides
 
