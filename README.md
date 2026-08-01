@@ -50,11 +50,13 @@ claude mcp add --transport http verificate \
   --header "Authorization: Bearer YOUR_TRIAL_TOKEN"
 ```
 
-**Cursor — one-click install:**
+**Cursor — one-click install (no signup, starts free):**
 
-[![Add verificate MCP server to Cursor](https://img.shields.io/badge/Cursor-Add_Verificate_(one--click)-111111?logo=data:image/svg%2bxml;base64,&labelColor=8CCB43)](https://cursor.com/en/install-mcp?name=verificate&config=eyJ1cmwiOiJodHRwczovL21jcC52ZXJpZmljYXRlLmFpL21jcCIsImhlYWRlcnMiOnsiQXV0aG9yaXphdGlvbiI6IkJlYXJlciBZT1VSX1RSSUFMX1RPS0VOIn19)
+[![Add Verificate to Cursor](https://img.shields.io/badge/Cursor-Add_Verificate_%E2%80%94_25_free_calls-111111?labelColor=8CCB43)](https://cursor.com/en/install-mcp?name=verificate&config=eyJ1cmwiOiJodHRwczovL21jcC52ZXJpZmljYXRlLmFpL21jcCJ9)
 
-(after install, replace YOUR_TRIAL_TOKEN in Cursor's MCP settings with the token from your dashboard)
+One click installs the server and you get **25 free validations, no account, no card** —
+enough to watch the gate catch real bugs. When you're hooked, sign up for a 30-day trial
+(then $30/mo) and add your token in Cursor's MCP settings to keep going.
 
 **Cursor / Windsurf / any MCP client (JSON)**
 
