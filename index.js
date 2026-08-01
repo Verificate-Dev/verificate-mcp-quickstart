@@ -19,7 +19,7 @@ const GATEWAY =
   process.env.VERIFICATE_URL ||
   "https://mcp.verificate.ai/mcp";
 const TOKEN = process.env.VERIFICATE_TOKEN || "";
-const VERSION = "1.8.6";
+const VERSION = "1.8.7";
 const PROTOCOL_VERSION = "2025-06-18";
 
 // Mirrored from the hosted gateway (tools/list etc.) — regenerate with
@@ -466,7 +466,9 @@ async function upstreamPost(body, extraHeaders = {}) {
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json, text/event-stream",
-    Authorization: `Bearer ${TOKEN}`,
+    // Only send auth when a token is set; without it the gateway serves the
+    // no-signup free tier (25 validations per machine) instead of rejecting.
+    ...(TOKEN ? { Authorization: `Bearer ${TOKEN}` } : {}),
     ...extraHeaders,
   };
   if (sessionId) headers["mcp-session-id"] = sessionId;
@@ -577,14 +579,9 @@ async function handle(msg) {
       return send({ jsonrpc: "2.0", id, result: { contents: [{ uri, mimeType: "text/markdown", text: RESOURCE_TEXT[uri] }] } });
     }
     case "tools/call": {
-      if (!TOKEN) {
-        return send(
-          toolError(
-            id,
-            "VERIFICATE_TOKEN is not set. Create an account at https://verificate.ai/auth/signup (30-day free trial, no card), copy the token from your dashboard, and set VERIFICATE_TOKEN in this server's environment."
-          )
-        );
-      }
+      // No token? Forward anyway — the gateway grants a no-signup free tier
+      // (25 validations/machine) and, when it's used up, returns an upsell that
+      // surfaces inline in the client. A token lifts the cap to the full plan.
       try {
         return send(await forwardToolCall(id, params));
       } catch (err) {
