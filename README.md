@@ -1,5 +1,11 @@
 # Verificate MCP — agentic code review with veto power
 
+<p align="center">
+  <img src="assets/verificate-demo.gif" alt="Verificate MCP rejecting AI-written payment code at 70, then approving the fix at 91.2 — real output from the live server" width="840">
+</p>
+
+<p align="center"><em>Real output from the live server: 12 lines of AI-written payment code — rejected, fixed, approved, in seconds.</em></p>
+
 **Not another linter wrapper.** The code-quality shelf on every MCP directory is two things: scanners (ESLint, Semgrep and SonarQube bridges — deterministic rules, no judgment) and prompt relays that pipe your repo to your own LLM key (self-review with extra steps). Verificate is neither. It is an **agentic reviewer with authority**: 17 deterministic reality gates — mock/placeholder veto, gaming & bypass detection, invented-API checks — fused with a **frontier-model enterprise review** (ISO/IEC 25010: performance, scalability, reliability). The gates hold veto power that no model output can override. Hosted, zero-install, binary verdict in seconds — in Claude Code, Cursor, Windsurf or any MCP client.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-8CCB43.svg)](LICENSE)
