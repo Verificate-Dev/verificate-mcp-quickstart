@@ -43,36 +43,28 @@ The server also ships **prompts** and **resources** for a richer client experien
 - Prompts `gate_my_changes` / `review_my_plan` — one-click workflows that loop validate → fix → re-validate until approved.
 - Resources `verificate://gates` (what each of the 17 deterministic gates watches for) and `verificate://example-verdict` (a verbatim production rejection).
 
-## Quick start (hosted — no install)
+## Quick start — no signup, no token, 30 seconds
 
-1. Create an account at <https://verificate.ai/auth/signup> (30-day trial, no card) and copy the token from your dashboard.
-2. Add the server to your client:
+Every machine gets **25 free validations** — no account, no card, no key. Add the URL and go:
 
 **Claude Code**
 
 ```bash
-claude mcp add --transport http verificate \
-  https://mcp.verificate.ai/mcp \
-  --header "Authorization: Bearer YOUR_TRIAL_TOKEN"
+claude mcp add --transport http verificate https://mcp.verificate.ai/mcp
 ```
 
-**Cursor — one-click install (no signup, starts free):**
+**Cursor — one-click install:**
 
 [![Add Verificate to Cursor](https://img.shields.io/badge/Cursor-Add_Verificate_%E2%80%94_25_free_calls-111111?labelColor=8CCB43)](https://cursor.com/en/install-mcp?name=verificate&config=eyJ1cmwiOiJodHRwczovL21jcC52ZXJpZmljYXRlLmFpL21jcCJ9)
 
-One click installs the server and you get **25 free validations, no account, no card** —
-enough to watch the gate catch real bugs. When you're hooked, sign up for a 30-day trial
-(then $30/mo) and add your token in Cursor's MCP settings to keep going.
-
-**Cursor / Windsurf / any MCP client (JSON)**
+**Windsurf / any MCP client (JSON)**
 
 ```json
 {
   "mcpServers": {
     "verificate": {
       "url": "https://mcp.verificate.ai/mcp",
-      "transport": "http",
-      "headers": { "Authorization": "Bearer YOUR_TRIAL_TOKEN" }
+      "transport": "http"
     }
   }
 }
@@ -80,7 +72,19 @@ enough to watch the gate catch real bugs. When you're hooked, sign up for a 30-d
 
 Cursor: `~/.cursor/mcp.json`. Windsurf: `~/.codeium/windsurf/mcp_config.json`.
 
-3. Ask your assistant to *"validate this function with verificate"* — you should see a structured verdict come back.
+Then ask your assistant to *"validate this function with verificate"* — a structured verdict comes back in seconds, and every free-tier response shows how many validations you have left and what the gate has caught for you.
+
+### Keep going after the free 25
+
+Sign up at <https://verificate.ai/auth/signup> (30-day trial, no card — then $30/mo) and add your token to the same config:
+
+```bash
+claude mcp add --transport http verificate \
+  https://mcp.verificate.ai/mcp \
+  --header "Authorization: Bearer YOUR_TRIAL_TOKEN"
+```
+
+or in the JSON config add `"headers": { "Authorization": "Bearer YOUR_TRIAL_TOKEN" }`.
 
 ## Make gating the default
 
