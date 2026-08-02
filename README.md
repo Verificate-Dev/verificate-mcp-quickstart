@@ -53,9 +53,13 @@ Every machine gets **25 free validations** — no account, no card, no key. Add 
 claude mcp add --transport http verificate https://mcp.verificate.ai/mcp
 ```
 
-**Cursor — one-click install:**
+**Cursor / VS Code — one-click install:**
 
 [![Add Verificate to Cursor](https://img.shields.io/badge/Cursor-Add_Verificate_%E2%80%94_25_free_calls-111111?labelColor=8CCB43)](https://cursor.com/en/install-mcp?name=verificate&config=eyJ1cmwiOiJodHRwczovL21jcC52ZXJpZmljYXRlLmFpL21jcCJ9)
+[![Add to VS Code](https://img.shields.io/badge/VS_Code-Add_Verificate-0078d7?labelColor=8CCB43)](https://vscode.dev/redirect/mcp/install?name=verificate&config=%7B%22type%22%3A%22http%22%2C%22url%22%3A%22https%3A%2F%2Fmcp.verificate.ai%2Fmcp%22%7D)
+[![Add to VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Add_Verificate-24bfa5?labelColor=8CCB43)](https://insiders.vscode.dev/redirect/mcp/install?name=verificate&config=%7B%22type%22%3A%22http%22%2C%22url%22%3A%22https%3A%2F%2Fmcp.verificate.ai%2Fmcp%22%7D)
+
+*LM Studio and Goose one-click buttons are at <https://verificate.ai/mcp> (GitHub strips their custom-protocol links).*
 
 **Windsurf / any MCP client (JSON)**
 
