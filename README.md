@@ -1,4 +1,4 @@
-# Verificate MCP — agentic code review with veto power
+# Verificate MCP — your vibe-coded MVP, all the way to production
 
 <p align="center">
   <img src="assets/verificate-demo.gif" alt="Verificate MCP rejecting AI-written payment code at 70, then approving the fix at 91.2 — real output from the live server" width="840">
@@ -6,7 +6,9 @@
 
 <p align="center"><em>Real output from the live server: 12 lines of AI-written payment code — rejected, fixed, approved, in seconds.</em></p>
 
-**Not another linter wrapper.** The code-quality shelf on every MCP directory is two things: scanners (ESLint, Semgrep and SonarQube bridges — deterministic rules, no judgment) and prompt relays that pipe your repo to your own LLM key (self-review with extra steps). Verificate is neither. It is an **agentic reviewer with authority**: 17 deterministic reality gates — mock/placeholder veto, gaming & bypass detection, invented-API checks — fused with a **frontier-model enterprise review** (ISO/IEC 25010: performance, scalability, reliability). The gates hold veto power that no model output can override. Hosted, zero-install, binary verdict in seconds — in Claude Code, Cursor, Windsurf or any MCP client.
+**You vibe-coded the demo. This ships it.** Between a working demo and a launched product used to stand an experienced CTO and a senior dev team — the people who catch the mock refund path, the invented SDK call, the loop that dies at real traffic. Verificate MCP is that review team as an MCP server: **17 deterministic reality gates with veto power**, fused with a **frontier-model enterprise review** (ISO/IEC 25010: performance, scalability, reliability), run on every AI-written change before it reaches your codebase. The AI writes; the gate holds the bar; you ship. Hosted, zero-install, binary verdict in seconds — in Claude Code, Cursor, Windsurf or any MCP client.
+
+**Not another linter wrapper.** The code-quality shelf on every MCP directory is two things: scanners (ESLint, Semgrep and SonarQube bridges — deterministic rules, no judgment) and prompt relays that pipe your repo to your own LLM key (self-review with extra steps). Verificate is neither: the gates hold veto power that no model output can override.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-8CCB43.svg)](LICENSE)
 [![Official MCP Registry](https://img.shields.io/badge/MCP_Registry-ai.verificate%2Fmcp-blue)](https://registry.modelcontextprotocol.io/v0/servers?search=verificate)
