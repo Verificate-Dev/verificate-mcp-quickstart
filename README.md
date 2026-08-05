@@ -199,3 +199,8 @@ run server-side and are not part of this repository.
 ## Glama
 
 [![Verificate MCP server score](https://glama.ai/mcp/servers/Verificate-Dev/verificate-mcp-quickstart/badges/score.svg)](https://glama.ai/mcp/servers/Verificate-Dev/verificate-mcp-quickstart)
+
+
+---
+
+**🌐 Not an English speaker?** Install instructions in हिन्दी · Português · Bahasa Indonesia · Español · 中文 · Tiếng Việt → [INSTALL.md](INSTALL.md)
