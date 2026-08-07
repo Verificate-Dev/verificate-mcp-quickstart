@@ -27,6 +27,22 @@ Your coding assistant writes a mock and calls it done. It invents an SDK call th
 
 Each of those is an afternoon of production debugging, caught in seconds.
 
+## Measured — vs. asking the model to review its own code
+
+A frontier model asked *"is this OK to merge?"* in a natural workflow missed reward-gaming (a test
+that only does `assert True`) and a hallucinated API (`stripe.Refund.create_partial`) in **0 of 6
+runs each**. Verificate's gate caught both **6 of 6 — deterministically**, with **0 false positives**
+on clean code.
+
+| Adversarial case | LLM review alone | **Verificate gate** |
+|---|---|---|
+| Reward-gaming (`assert True` test) | 0 / 6 | **6 / 6** |
+| Hallucinated API (nonexistent SDK call) | 0 / 6 | **6 / 6** |
+
+**Battle-tested:** 2,581 audited validations over 5 weeks (66 rejected, 270 flagged unfit),
+including guarding the write-path of a **21M-entity source-cited knowledge base** (98.6% cited,
+100% licensed across 268 sources). Reproduce it: [`scripts/`](scripts/) · full write-up: [`COMPARISON.md`](COMPARISON.md).
+
 ## Tools
 
 Each tool has one job — two gates that return verdicts, one advisor that doesn't, one generator:
